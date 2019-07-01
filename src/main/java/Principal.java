@@ -12,13 +12,15 @@ public class Principal {
     
     public static void main(String[] args) {
         TipoUsuarioDao tipoUsuarioDao = new TipoUsuarioDao();
-        TipoUsuario tipoUsuario = new TipoUsuario();
+//        TipoUsuario tipoUsuario = new TipoUsuario();
 //        tipoUsuario.setId(1);
 //        tipoUsuario.setNome("William");
 //        tipoUsuario.setTipoPermissao(1);
 //        tipoUsuario.setAtivo(true);
-//        tipoUsuarioDao.salvar(tipoUsuario);
-//        
+//      Integer idInserido =  tipoUsuarioDao.salvar(tipoUsuario);
+//      
+//        System.out.println("IdInserido" + idInserido);
+        
         List<TipoUsuario> tiposDeUsuario  = tipoUsuarioDao.listar();
         System.out.println(tiposDeUsuario);
         

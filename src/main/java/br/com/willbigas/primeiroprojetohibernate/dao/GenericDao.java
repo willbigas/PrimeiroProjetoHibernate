@@ -2,6 +2,8 @@ package br.com.willbigas.primeiroprojetohibernate.dao;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -19,21 +21,21 @@ public class GenericDao<Entidade> {
                 .getActualTypeArguments()[0];
     }
 
-    public boolean salvar(Entidade entidade) {
+    public int salvar(Entidade entidade) {
         Session sessao = FabricaConexaoHibernate.getFabricaDeSessoes().openSession();
         Transaction transacao = null;
 
         try {
             transacao = sessao.beginTransaction();
-            sessao.save(entidade);
+            Integer idInserido = (Integer) sessao.save(entidade);
             transacao.commit();
-            return true;
+            return idInserido;
         } catch (RuntimeException erro) {
             if (transacao != null) {
                 transacao.rollback();
             }
             System.out.println(erro.getMessage());
-            return false;
+            return 0;
         } finally {
             sessao.close();
         }
@@ -43,10 +45,12 @@ public class GenericDao<Entidade> {
         Session sessao = FabricaConexaoHibernate.getFabricaDeSessoes().openSession();
         Transaction transacao = null;
         transacao = sessao.beginTransaction();
-        Entidade entidade;
+        CriteriaBuilder builder = sessao.getCriteriaBuilder();
         try {
-            Criteria consulta = sessao.createCriteria(classeGenerica);
-            List<Entidade> resultado = consulta.list();
+
+            CriteriaQuery<Entidade> criteria = builder.createQuery(classeGenerica);
+            criteria.from(classeGenerica);
+            List<Entidade> resultado = sessao.createQuery(criteria).getResultList();
             transacao.commit();
             return resultado;
         } catch (RuntimeException erro) {
